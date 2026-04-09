@@ -1,6 +1,7 @@
  *.txt 
 .cache/
 *.json
-.out
+*.out
 logs/
 obj/
+
