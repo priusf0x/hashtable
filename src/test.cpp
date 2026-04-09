@@ -6,16 +6,15 @@
 int main(void)
 {
 
-    hashtable_t hash_tab = nullptr;
-    HashTableCtor(&hash_tab, 10);
+    hashtable_t ht = nullptr;
+    HashTableCtor(&ht, 10);
 
+    // size_t meow;
+    // ListInitNewElem(hash_tab->data, 1, &meow);
+ 
+    HashTableDump(ht, "meow");
 
-    size_t meow;
-    ListInitNewElem(hash_tab->data, 1, &meow);
-
-
-
-    HashTableDtor(hash_tab);
+    HashTableDtor(ht);
 
 
     return 0;

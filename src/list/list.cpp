@@ -13,7 +13,7 @@ const ssize_t CANARY_SIZE = 4;
 static const uint64_t CANARY_FILL = 0xBAB1BAB0BAB1BAB0;
 
 static const int NO_LINK = -1;
-static const data_type EMPTY_ELEMENT = 0;
+static const data_type EMPTY_ELEMENT = {};
 
 static list_return_e SetCanary(void* pointer, uint64_t value);
 static list_return_e NumerizeElements(list_t list, size_t start_index);

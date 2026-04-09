@@ -1,6 +1,8 @@
 #include "hashtable.h"
 
 #include <assert.h>
+#include <functional>
+#include <istream>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -8,8 +10,7 @@
 
 // =============================== LOGGER =====================================
 
-static hashtable_ret_e PrintHTMLHeader(const char* current_time);
-static hashtable_ret_e HashTableDot(const hashtable_t ht, const char* current_time);
+// static hashtable_ret_e PrintHTMLHeader(const char* current_time);
 
 /////////////////////////////// singletone ////////////////////////////////////
 static const char* LOG_FILE_NAME = "logs/log_file.htm";
@@ -20,6 +21,10 @@ HashTableGetLogFile()
     return log_file;
 }
 
+static hashtable_ret_e                                    
+HashTableDot(const hashtable_t ht,
+             const char*       current_time);
+
 hashtable_ret_e
 HashTableDump(const hashtable_t ht,
               const char*       comment)
@@ -27,7 +32,7 @@ HashTableDump(const hashtable_t ht,
     assert(ht != nullptr);
     assert(comment != nullptr);
 
-    FILE* log_file = GetLogFile();
+    FILE* log_file = HashTableGetLogFile();
     if (log_file == nullptr)
     {
         return HT_FILE_OPEN_ERR;
@@ -37,14 +42,13 @@ HashTableDump(const hashtable_t ht,
     char current_time[str_time_size] = {};
     GetTime(current_time, str_time_size);
 
-    PrintHTMLHeader(current_time);
+    // PrintHTMLHeader(current_time);
     fprintf(log_file, "<h4>Comment:\"%s\"</h4>", comment);
     HashTableDot(ht, current_time);
 
     return HT_SUCCESS;
 }
-
-//================================ DOT_GEN ====================================
+//////////////////////////////////// dot_gen //////////////////////////////////
 
 // static void DrawFilledElement(const list_t list, size_t  index, FILE* dot_file);
 // static void DrawEmptyElement(const list_t list, size_t  index, FILE* dot_file);
@@ -54,8 +58,13 @@ HashTableDump(const hashtable_t ht,
 
 static hashtable_ret_e 
 HashTableDotInit(FILE* dot_file);
-
-
+static hashtable_ret_e
+HashTableDotEnd(FILE* dot_file);
+static hashtable_ret_e
+HashTableDrawBuckets(const hashtable_t ht,
+                     FILE*             dot_file);
+static hashtable_ret_e
+HashTableCompileDot(const char* current_time);
 
 static hashtable_ret_e                                    
 HashTableDot(const hashtable_t ht,
@@ -69,23 +78,24 @@ HashTableDot(const hashtable_t ht,
     const char* name_template = "logs/%s.gv";
 
     snprintf(file_name, max_string_size - 1, name_template, current_time);
-    FILE* dot_file = fopen(name_template, "w+");
+    FILE* dot_file = fopen(file_name, "w+");
     if (dot_file == nullptr)
-
-
     {
         return HT_FILE_OPEN_ERR;
     }
 
     HashTableDotInit(dot_file);
 
-    // HashTableDrawBuckets
-    // HashTableDrawData
+    HashTableDrawBuckets(ht, dot_file);
+
+    HashTableDotEnd(dot_file);
 
     if (fclose(dot_file) != 0)
     {
         return HT_FILE_CLOSE_ERR;
     }
+
+    HashTableCompileDot(current_time);
 
     return HT_SUCCESS;
 }
@@ -105,6 +115,17 @@ HashTableDotInit(FILE* dot_file)
 }
 
 static hashtable_ret_e
+HashTableDotEnd(FILE* dot_file)
+{
+    assert(dot_file != nullptr);
+
+    const char* end_sentence = "}";
+    fprintf(dot_file, "%s", end_sentence);
+
+    return HT_SUCCESS;
+}
+
+static hashtable_ret_e
 HashTableCompileDot(const char* current_time)
 {
     assert(current_time != nullptr);
@@ -118,9 +139,46 @@ HashTableCompileDot(const char* current_time)
     return HT_SUCCESS;
 }
 
+static const double STEP_Y = 1;
+static const double STEP_X = 1;
 
-// // ======================= PRINT_INFO_FUNCTION ===================
-//
+static hashtable_ret_e
+DrawBucket(const hashtable_t ht, 
+           size_t            buc_num,
+           FILE*             dot_file)
+{
+    assert(ht != nullptr);
+    
+    const double pos_y = (double) (ht->tab_size - buc_num) * STEP_Y;
+    const double pos_x = 0;
+
+    const char* bucket_template = "b%zu[ fillcolor = \"#949494\","
+                                  "label = \"Bucket %ld\", width = 1.8"
+                                  ",pos = \"%f, %f!\"];\n";
+
+    fprintf(dot_file, bucket_template, buc_num,
+                        buc_num, pos_x, pos_y);
+
+
+    return HT_SUCCESS; 
+}
+
+static hashtable_ret_e
+HashTableDrawBuckets(const hashtable_t ht,
+                     FILE*             dot_file)
+{
+    assert(ht != nullptr);
+    assert(dot_file != nullptr);
+
+    for (size_t buc_num = 0; buc_num < ht->tab_size; buc_num++)
+    {
+        DrawBucket(ht, buc_num, dot_file);
+    }
+
+    return HT_SUCCESS;
+}
+
+
 // static void
 // PrintHTMLHeader(FILE*       log_file,
 //                 const char* current_time)

@@ -56,3 +56,7 @@ HashTableDtor(hashtable_t h_tab)
     return HT_SUCCESS;
 }
                                                                        
+// ============================= HASHTABLE_FUNCTION ===========================
+
+// hashtable_ret_e 
+// HashTable

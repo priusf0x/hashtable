@@ -2,12 +2,15 @@ SOURCES= \
 	 common/tools.cpp\
 	 list/list.cpp\
 	 hashtable/hashtable.cpp\
+	 hashtable/hashtable_dump.cpp\
+	 hash/hash.cpp\
 	 test.cpp
 	
 INCLUDES_DIR = \
 	 list/\
 	 common/\
 	 hashtable/\
+	 hash/
 
 
 OBJ_DIR = obj

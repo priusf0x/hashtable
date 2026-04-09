@@ -37,12 +37,11 @@ GetTime(char*        current_time,
     time_t t;
     struct tm *tmp;
     time(&t);
-    char* tmp_string = (char*) calloc(string_size, sizeof(char));
+    char tmp_string[256] = {};
     tmp = localtime(&t);
     clock_t start_t = clock();
     strftime(tmp_string, string_size, "%Y-%m-%H-%M-%S", tmp);
     snprintf(current_time, string_size,"%s-%.0f", tmp_string,
             1000000000 * (((double) (start_t % CLOCKS_PER_SEC)) / CLOCKS_PER_SEC));
-    free(tmp_string);
 }
 

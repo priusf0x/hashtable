@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include "key.h"
+
 struct list_s;
 
 enum list_return_e
@@ -19,9 +21,9 @@ enum list_return_e
     LIST_RETURN_ELEMENT_COUNT_ERROR,
 };
 
-typedef double data_type;
-
 // ======================== LIST ===========================
+
+typedef const char* data_type;  
 
 typedef list_s* list_t;
 

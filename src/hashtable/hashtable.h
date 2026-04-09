@@ -32,5 +32,10 @@ HashTableCtor(hashtable_t* h_tab, size_t default_size);
 hashtable_ret_e
 HashTableDtor(hashtable_t h_tab);
 
+// =================================== DUMP ===================================
+
+hashtable_ret_e
+HashTableDump(const hashtable_t ht,
+              const char*       comment);
 
 #endif // HASHTABLE_H
