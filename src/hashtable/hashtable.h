@@ -19,8 +19,9 @@ enum hashtable_ret_e
 {
     HT_SUCCESS,
     HT_BAD_ALLOCATION,
-    HT_LIST_ERR
-
+    HT_LIST_ERR,
+    HT_FILE_OPEN_ERR,
+    HT_FILE_CLOSE_ERR
 };
 
 // ================================= CTOR/DTOR ================================

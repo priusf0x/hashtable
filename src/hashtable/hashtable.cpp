@@ -55,7 +55,4 @@ HashTableDtor(hashtable_t h_tab)
 
     return HT_SUCCESS;
 }
-
-
-
                                                                        
