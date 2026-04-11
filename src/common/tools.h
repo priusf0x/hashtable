@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+ssize_t GetFileSize(const char* file_name);
 void* recalloc(void*  pointer, size_t current_size, size_t new_size);
 void  GetTime(char*  current_time, const size_t string_size);
 

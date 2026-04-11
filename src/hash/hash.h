@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
-uint64_t HashFirstAscii(const char* string);
+#include "my_string.h"
+
+uint64_t HashFirstAscii(string_s string);
 
 #endif // HASH_H

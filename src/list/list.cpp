@@ -9,6 +9,8 @@
 
 #include "tools.h"
 
+#define NDEBUG 
+
 const ssize_t CANARY_SIZE = 4;
 static const uint64_t CANARY_FILL = 0xBAB1BAB0BAB1BAB0;
 
@@ -278,6 +280,7 @@ GetPreviousElement(const list_t list,
 
 static bool CheckCanary(const list_t list);
 
+[[maybe_unused]]
 static list_return_e
 ListVerify(const list_t list)
 {

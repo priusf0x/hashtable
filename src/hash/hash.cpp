@@ -3,13 +3,16 @@
 #include <assert.h>
 #include <stdint.h>
 
+#include "my_string.h"
+
+// ================================ HASH_ALGOS ================================
+
+
 // 3. First ASCII hash 
 
 uint64_t 
-HashFirstAscii(const char *string)
+HashFirstAscii(string_s string)
 {
-    assert(string != nullptr);
-    
-    return (uint64_t) string[0];
+    return (uint64_t) string.string[0];
 }
 

@@ -1,21 +1,29 @@
 #include "hashtable.h"
-#include "list.h"
 
 #include <stdio.h>
+
+#include "hash.h"
 
 int main(void)
 {
 
     hashtable_t ht = nullptr;
-    HashTableCtor(&ht, 10);
+    HashTableCtor(&ht, 10, HashFirstAscii);
 
-    // size_t meow;
-    // ListInitNewElem(hash_tab->data, 1, &meow);
- 
+    HashTableAddElem(ht, {"meow", 4}); 
+    HashTableAddElem(ht, {"m2", 1}); 
+    //
+    // HashTableAddElem(ht, "aeow"); 
+    // HashTableAddElem(ht, "aeow"); 
+    // HashTableAddElem(ht, "aeow"); 
+    // HashTableAddElem(ht, "aeow"); 
+    //
+    // HashTableAddElem(ht, "zeow"); 
+    //
     HashTableDump(ht, "meow");
 
     HashTableDtor(ht);
 
-
     return 0;
-}                                           
+}
+

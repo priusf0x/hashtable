@@ -1,11 +1,13 @@
 #include "hashtable.h"
 
 #include <assert.h>
+#include <cstddef>
 #include <functional>
 #include <istream>
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "list.h"
 #include "tools.h"
 
 // =============================== LOGGER =====================================
@@ -139,8 +141,42 @@ HashTableCompileDot(const char* current_time)
     return HT_SUCCESS;
 }
 
-static const double STEP_Y = 1;
-static const double STEP_X = 1;
+static const double STEP_Y = 0.52;
+static const double STEP_X = 2.02;
+
+static hashtable_ret_e
+DrawData(const hashtable_t ht, 
+         size_t            buc_num,
+         FILE*             dot_file)
+{
+    assert(ht != nullptr);
+    assert(dot_file != nullptr);
+    
+    list_t list = ht->data;
+    const char* data_template = "d%zu%zu[ fillcolor = \"#949494\","
+                                "label = \"word = %.*s\", width = 2"
+                                ",pos = \"%f, %f\"];\n";
+    ssize_t index = (ssize_t) ht->buckets[buc_num]; 
+    string_s word = {};
+    size_t count = 0;
+
+    while (index > 0)
+    {
+        count++;
+
+        const double pos_y = (double) (ht->tab_size - buc_num) * STEP_Y;
+        double pos_x = (double) count * STEP_X;
+
+        GetElementValue(ht->data, index, &word);
+        fprintf(dot_file, data_template, buc_num, index, 
+                    word.size, word.string, pos_x, pos_y);
+
+        index = GetNextElement(list, (size_t) index);
+    }
+
+
+    return HT_SUCCESS;
+}
 
 static hashtable_ret_e
 DrawBucket(const hashtable_t ht, 
@@ -152,12 +188,13 @@ DrawBucket(const hashtable_t ht,
     const double pos_y = (double) (ht->tab_size - buc_num) * STEP_Y;
     const double pos_x = 0;
 
-    const char* bucket_template = "b%zu[ fillcolor = \"#949494\","
+    const char* bucket_template = "b%zu[ fillcolor = \"#b16261\","
                                   "label = \"Bucket %ld\", width = 1.8"
                                   ",pos = \"%f, %f!\"];\n";
 
-    fprintf(dot_file, bucket_template, buc_num,
-                        buc_num, pos_x, pos_y);
+    fprintf(dot_file, bucket_template, buc_num, buc_num, pos_x, pos_y);
+
+    DrawData(ht, buc_num, dot_file);
 
 
     return HT_SUCCESS; 

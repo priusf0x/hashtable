@@ -1,17 +1,18 @@
 SOURCES= \
 	 common/tools.cpp\
+	 common/buffer/buffer.cpp\
 	 list/list.cpp\
 	 hashtable/hashtable.cpp\
 	 hashtable/hashtable_dump.cpp\
 	 hash/hash.cpp\
-	 test.cpp
+	 test.cpp\
 	
 INCLUDES_DIR = \
 	 list/\
 	 common/\
+	 common/buffer/\
 	 hashtable/\
-	 hash/
-
+	 hash/\
 
 OBJ_DIR = obj
 SOURCE_DIR = src
@@ -64,5 +65,6 @@ all: $(TARGET)
 
 clean:
 	@rm -rf $(OBJ_DIR)
+	@rm -rf $(logfolder)
 	@rm -f $(TARGET)
 	@echo "Cleaned Successfully"

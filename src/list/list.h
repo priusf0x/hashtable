@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "key.h"
+#include "my_string.h"
 
 struct list_s;
 
@@ -23,7 +23,7 @@ enum list_return_e
 
 // ======================== LIST ===========================
 
-typedef const char* data_type;  
+typedef string_s data_type;  
 
 typedef list_s* list_t;
 

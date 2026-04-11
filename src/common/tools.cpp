@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
+#include <sys/stat.h>
 
 void* recalloc(void*  pointer,
                size_t current_size,
@@ -45,3 +46,19 @@ GetTime(char*        current_time,
             1000000000 * (((double) (start_t % CLOCKS_PER_SEC)) / CLOCKS_PER_SEC));
 }
 
+ssize_t 
+GetFileSize(const char* file_name)
+{
+    assert(file_name != NULL);
+    
+    struct stat file_stat = {};
+
+    if (stat(file_name, &file_stat) != 0)
+    {
+        return -1;
+    }
+
+    ssize_t char_number = file_stat.st_size;
+    
+    return char_number;
+}
