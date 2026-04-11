@@ -37,7 +37,7 @@ HashTableCtor(hashtable_t* h_tab,
     }                                    
 
     list_return_e list_ctor_output = LIST_RETURN_SUCCESS;
-    if ((list_ctor_output = InitList(&(*h_tab)->data, h_size)))
+    if ((list_ctor_output = InitList(&(*h_tab)->data, h_size * 3)))
     {
         free((*h_tab)->buckets);
         free(*h_tab);
@@ -104,6 +104,7 @@ HashTableAddElem(hashtable_t ht,
     else 
     {
         size_t next_index = list_index;
+
         do
         {
             list_index = next_index;
@@ -164,19 +165,27 @@ HashTableGetElem(hashtable_t ht,
 
 hashtable_ret_e
 HashTableLoadFromFile(hashtable_t ht, 
-                      const char* file_name)
+                      buffer_t    buf)
 {
     assert(ht != nullptr);
-    assert(file_name != nullptr);
+    assert(buf != nullptr);
 
-    buffer_t buffer = nullptr;
-    if(BufferCtor(&buffer, file_name) != BUFFER_RETURN_SUCCESS)
+    hashtable_ret_e ht_ret = HT_SUCCESS;
+    SkipNotAlphaB(buf);
+
+    while  (*(buf->buffer + buf->cur_pos))
     {
-        return HT_BUFFER_ERR;
-    }
+        size_t word_pos = buf->cur_pos;
+        SkipAlphaB(buf);
+        size_t word_size = buf->cur_pos - word_pos;
+        SkipNotAlphaB(buf);
 
-    
+        string_s word = {buf->buffer + word_pos, word_size};
+        if ((ht_ret = HashTableAddElem(ht, word)))
+        {
+            return ht_ret;
+        }
+    }
 
     return HT_SUCCESS;
 }
-                      

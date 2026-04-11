@@ -1,6 +1,7 @@
 #include "buffer.h"
 
 #include <assert.h>
+#include <cctype>
 #include <cstddef>
 #include <string.h>
 #include <sys/stat.h>
@@ -81,13 +82,12 @@ BufferCtor(buffer_t*    buffer,
 }
 
 buffer_return_e
-BufferDtor(buffer_t* buffer)
+BufferDtor(buffer_t buffer)
 {
-    if ((buffer != NULL) && (*buffer != NULL))
+    if (buffer != nullptr)
     {
-        free((*buffer)->buffer);
-        free(*buffer);
-        *buffer = NULL;
+        free(buffer->buffer);
+        free(buffer);
     }
 
     return BUFFER_RETURN_SUCCESS;
@@ -96,14 +96,14 @@ BufferDtor(buffer_t* buffer)
 // ================================ STRING_F ===================================
 
 static size_t
-SkipSpaces(const char* string,  
-           size_t      current_position)
+SkipAlpha(const char* string,  
+          size_t      current_position)
 {
-    assert(string != NULL);
+    assert(string != nullptr);
 
     char character = *(string + current_position);
 
-    while ((isspace(character)) && (character != '\0'))
+    while (isalnum(character) && (character != '\0'))
     {
         current_position++;
         character = *(string + current_position);
@@ -113,14 +113,14 @@ SkipSpaces(const char* string,
 }
 
 static size_t
-SkipNotSpaces(const char* string,
-              size_t      current_position)
+SkipNotAlpha(const char* string,
+             size_t      current_position)
 {
     assert(string != NULL);
 
     char character = *(string + current_position);
 
-    while (!isspace(character) && (character != '\0'))
+    while (!isalnum(character) && (character != '\0'))
     {
         current_position++;
         character = *(string + current_position);
@@ -132,21 +132,19 @@ SkipNotSpaces(const char* string,
 // ================================ METHODS ===================================
 
 void 
-SkipSpacesB(buffer_t buffer)
+SkipAlphaB(buffer_t buffer)
 {
     assert(buffer != nullptr);
 
-    buffer->current_position = SkipSpaces(buffer->buffer, 
-                                            buffer->current_position);
+    buffer->cur_pos = SkipAlpha(buffer->buffer, buffer->cur_pos);
 }
 
 void 
-SkipNotSpacesB(buffer_t buffer)
+SkipNotAlphaB(buffer_t buffer)
 {
     assert(buffer != nullptr);
 
-    buffer->current_position = SkipNotSpaces(buffer->buffer, 
-                                            buffer->current_position);
+    buffer->cur_pos = SkipNotAlpha(buffer->buffer, buffer->cur_pos);
 }
 
 void 
@@ -155,5 +153,5 @@ SkipNSymbolsB(buffer_t buffer,
 {
     assert(buffer != nullptr);
 
-    buffer->current_position += n;
+    buffer->cur_pos += n;
 }

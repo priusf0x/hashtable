@@ -87,9 +87,7 @@ HashTableDot(const hashtable_t ht,
     }
 
     HashTableDotInit(dot_file);
-
     HashTableDrawBuckets(ht, dot_file);
-
     HashTableDotEnd(dot_file);
 
     if (fclose(dot_file) != 0)
@@ -215,108 +213,60 @@ HashTableDrawBuckets(const hashtable_t ht,
     return HT_SUCCESS;
 }
 
+// =========================== DATA_FOR_DISTRIBUTION ==========================
 
-// static void
-// PrintHTMLHeader(FILE*       log_file,
-//                 const char* current_time)
-// {
-//     assert(log_file != nullptr);
-//     assert(current_time != nullptr);
-//
-//     fprintf(log_file, "<html>\n"
-//                         "<style>"
-//                         "body{background-color: rgb(48, 48, 48);}"
-//                         "h1{color: rgb(212, 58, 56);}"
-//                         "h2{color: rgba(153, 26, 24, 1);}"
-//                         "h4{color: rgb(182, 182, 182);}"
-//                         "</style>"
-//                         "<h1> LIST_DUMP %s</h1>\n",  current_time);
-//
-//     const ssize_t max_string_size = 50;
-//     char img_template[max_string_size] = {};
-//     snprintf(img_template, max_string_size - 1, "<img src=\"%s.png\","
-//                                                 "height = \"20%%\">",
-//                                                 current_time);
-//     fprintf(log_file, "%s", img_template);
-// }
-//
-//
-// static void
-// DrawFilledElement(const list_t list,
-//                   size_t       index,
-//                   FILE*        dot_file)
-// {
-//
-//     assert(list != nullptr);
-//     assert(dot_file != nullptr);
-//
-//     fprintf(dot_file, "p%zu[ fillcolor = \"#949494\","
-//                         "label = \"prev = %ld\", width = 1.8"
-//                         ",pos = \"%zu.05, 10!\"];\n", index,
-//                         list->data[index].previous, 4 + 5 * index);
-//
-//     fprintf(dot_file, "i%zu[fillcolor =\"#b6b6b6ff\","
-//                         "label = \"index = %zu\", width = 3.7,"
-//                         "pos = \"%zu, 11.2!\"];", index,
-//                         index, 5 + 5 * index);
-//
-//     fprintf(dot_file, "v%zu[fillcolor =\"#b16261\","
-//                         "label = \"value = %f\"width = 3.7, "
-//                         "pos = \"%zu,10.6!\"];", index,
-//                         list->data[index].element, 5 + 5 * index);
-//
-//     fprintf(dot_file, "n%zu[fillcolor =\"#949494\","
-//                         "label = \"next = %ld\", width = 1.8,"
-//                         " pos = \"%zu.95,10!\"];",
-//                         index, list->data[index].next,5 + 5 * index);
-//
-//     fprintf(dot_file, "inv%zu[style=\"invis\","
-//                         "height = 2, pos = \"%zu.5, 11!\"];",
-//                         index, 7 + 5 * index);
-//
-//     if ((list->data[index].next != 0) && (list->data[index].next != NO_LINK))
-//     {
-//         fprintf(dot_file, "n%zu -- p%ld[color = \"#d1d1d1\", dir = both];",
-//                 index, list->data[index].next);
-//     }
-// }
-//
-// static void
-// DrawEmptyElement(const list_t list,
-//                  size_t       index,
-//                  FILE*        dot_file)
-// {
-//     assert(dot_file != nullptr);
-//
-//     fprintf(dot_file, "p%zu[fillcolor = \"#818181ff\","
-//                       "label = \"prev = %ld\", width = 1.8"
-//                       ",pos = \"%zu.05, 10!\"];", index,
-//                       list->data[index].previous, 4 + 5 * index);
-//
-//     fprintf(dot_file, "i%zu[fillcolor =\"#818181ff\","
-//                       "label = \"index = %zu\","
-//                       "width = 3.7,pos = \"%zu, 11.2!\"];", index,
-//                       index, 5 + 5 * index);
-//
-//     fprintf(dot_file, "v%zu[fillcolor =\"#818181ff\","
-//                       "label = \"value = %f\",width = 3.7,"
-//                       "pos = \"%zu,10.6!\"];", index,
-//                       list->data[index].element, 5 + 5 * index);
-//
-//     fprintf(dot_file, "n%zu[fillcolor =\"#818181ff\","
-//                       "label = \"next = %ld\", width = 1.8,"
-//                       " pos = \"%zu.95,10!\"];", index,
-//                       list->data[index].next,5 + 5 * index);
-//
-//     fprintf(dot_file, "inv%zu[style=\"invis\","
-//                       "height = 2, pos = \"%zu.5, 11!\"];",
-//                       index, 7 + 5 * index);
-//
-//     if (list->data[index].next != NO_LINK)
-//     {
-//         fprintf(dot_file, "n%zu -- p%ld[color = \"#aaaaaa96\","
-//                 "dir = forward];", index, list->data[index].next);
-//     }
-// }
+static size_t 
+CountElInBucket(hashtable_t ht, 
+                size_t      buc_num)
+{
+    assert(ht != nullptr);
+
+    size_t el_num = ht->buckets[buc_num];
+
+    size_t el_amount = 0;
+    do
+    {
+        el_amount++;
+    } while ((el_num = (size_t) GetNextElement(ht->data, el_num)));
+
+    return el_amount;
+}
+
+hashtable_ret_e 
+HashTableWriteInJSON(hashtable_t ht,
+                     size_t*     dist_data)
+{
+    assert(ht != nullptr);
+
+    const size_t tab_size = ht->tab_size;
+    for (size_t buc_num = 0; buc_num < tab_size; buc_num++)
+    {
+        printf("%zu\n", dist_data[buc_num]);
+    }
+
+    return HT_SUCCESS;
+}
+
+hashtable_ret_e 
+HashTableMakeDistr(hashtable_t ht)
+{
+    assert(ht != nullptr);
+
+    const size_t tab_size = ht->tab_size;
+    size_t* dist_data = (size_t*) calloc(tab_size, sizeof(size_t));
+// Коля, если ты это читаешь прости меня, пожалуйста, мне очень стыдно
+// здесь использовать каллок, но я не хотел делать VLA или массивы  константной длины
+
+    for (size_t buc_num = 0; buc_num < tab_size; buc_num++)
+    {
+        dist_data[buc_num] = CountElInBucket(ht, buc_num);
+    }
+
+    HashTableWriteInJSON(ht, dist_data);
+
+    free(dist_data);
+
+    return HT_SUCCESS;
+}
 
 #pragma GCC diagnostic warning "-Wformat-nonliteral"

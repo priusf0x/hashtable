@@ -87,7 +87,7 @@ A Tour of Computer Systems
 1.4
 
 1.5
-1.6
+1.6fg
 1.7
 
 1.8

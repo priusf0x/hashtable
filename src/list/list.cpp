@@ -246,8 +246,8 @@ GetNextElement(const list_t list,
     VERIFY_RET(list);
 
     if ((element_index > list->elements_capacity)
-        || (list->data[element_index].previous == NO_LINK)
-        || (element_index == 0))
+        || (list->data[element_index].previous == NO_LINK))
+        // || (element_index == 0))
     {
         return NO_LINK;
     }

@@ -16,7 +16,7 @@ enum buffer_return_e
 struct buffer_s 
 {
     char*  buffer;
-    size_t current_position;
+    size_t cur_pos;
 };
 
 typedef buffer_s* buffer_t;
@@ -30,15 +30,15 @@ BufferCtor(buffer_t*    buffer,
            const char*  file_name);
 
 buffer_return_e
-BufferDtor(buffer_t* buffer);
+BufferDtor(buffer_t buffer);
 
 // ================================ ACTIONS ===================================
 
 void 
-SkipSpacesB(buffer_t buffer);
+SkipAlphaB(buffer_t buffer);
 
 void 
-SkipNotSpacesB(buffer_t buffer);
+SkipNotAlphaB(buffer_t buffer);
 
 void 
 SkipNSymbolsB(buffer_t buffer,

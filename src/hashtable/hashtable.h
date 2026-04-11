@@ -9,11 +9,10 @@
 
 struct hashtable_s 
 {
-    size_t        tab_size;
-    size_t*       buckets;
-    list_t        data;
-    uint64_t    (*hash_func) (string_s); 
-    buffer_t      buffer;
+    size_t     tab_size;
+    size_t*    buckets;
+    list_t     data;
+    uint64_t (*hash_func) (string_s); 
 };
 typedef hashtable_s* hashtable_t;
 
@@ -46,6 +45,10 @@ hashtable_ret_e
 HashTableAddElem(hashtable_t ht,
                  string_s    elem);
 
+hashtable_ret_e
+HashTableLoadFromFile(hashtable_t ht, 
+                      buffer_t    buf);
+
 // ================================== GET_ELEM ================================
 
 hashtable_ret_e 
@@ -57,5 +60,8 @@ HashTableGetElem(hashtable_t ht,
 hashtable_ret_e
 HashTableDump(const hashtable_t ht,
               const char*       comment);
+
+hashtable_ret_e 
+HashTableMakeDistr(hashtable_t ht);
 
 #endif // HASHTABLE_H
