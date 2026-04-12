@@ -12,7 +12,7 @@ struct hashtable_s
     size_t     tab_size;
     size_t*    buckets;
     list_t     data;
-    uint64_t (*hash_func) (string_s); 
+    uint32_t (*hash_func) (string_s); 
 };
 typedef hashtable_s* hashtable_t;
 
@@ -34,7 +34,7 @@ enum hashtable_ret_e
 hashtable_ret_e
 HashTableCtor(hashtable_t* h_tab,
               size_t       h_size,
-              uint64_t   (*hash_func) (string_s));
+              uint32_t   (*hash_func) (string_s));
 
 hashtable_ret_e
 HashTableDtor(hashtable_t h_tab);
@@ -62,6 +62,7 @@ HashTableDump(const hashtable_t ht,
               const char*       comment);
 
 hashtable_ret_e 
-HashTableMakeDistr(hashtable_t ht);
+HashTableMakeDistr(hashtable_t ht,
+                   const char* output_name);
 
 #endif // HASHTABLE_H

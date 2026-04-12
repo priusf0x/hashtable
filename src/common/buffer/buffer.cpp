@@ -132,7 +132,7 @@ SkipNotAlpha(const char* string,
 // ================================ METHODS ===================================
 
 void 
-SkipAlphaB(buffer_t buffer)
+SkipAlNumB(buffer_t buffer)
 {
     assert(buffer != nullptr);
 
@@ -140,7 +140,7 @@ SkipAlphaB(buffer_t buffer)
 }
 
 void 
-SkipNotAlphaB(buffer_t buffer)
+SkipNotAlNumB(buffer_t buffer)
 {
     assert(buffer != nullptr);
 

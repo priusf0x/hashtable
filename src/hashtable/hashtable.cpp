@@ -15,7 +15,7 @@
 hashtable_ret_e
 HashTableCtor(hashtable_t* h_tab,
               size_t       h_size,
-              uint64_t   (*hash_func) (string_s))
+              uint32_t   (*hash_func) (string_s))
 {
     assert(h_tab != nullptr);
 
@@ -171,14 +171,14 @@ HashTableLoadFromFile(hashtable_t ht,
     assert(buf != nullptr);
 
     hashtable_ret_e ht_ret = HT_SUCCESS;
-    SkipNotAlphaB(buf);
+    SkipNotAlNumB(buf);
 
     while  (*(buf->buffer + buf->cur_pos))
     {
         size_t word_pos = buf->cur_pos;
-        SkipAlphaB(buf);
+        SkipAlNumB(buf);
         size_t word_size = buf->cur_pos - word_pos;
-        SkipNotAlphaB(buf);
+        SkipNotAlNumB(buf);
 
         string_s word = {buf->buffer + word_pos, word_size};
         if ((ht_ret = HashTableAddElem(ht, word)))

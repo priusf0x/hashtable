@@ -7,23 +7,23 @@
 #include "hash.h"
 #include <ctype.h>
 
-static const size_t TABLE_SIZE = 100;
+static const size_t TABLE_SIZE = 1499;
 
 int main(void)
 {
 
     hashtable_t ht = nullptr;
-    HashTableCtor(&ht, TABLE_SIZE, HashFirstAscii);
+    HashTableCtor(&ht, TABLE_SIZE, HashCRC32);
 
     buffer_t buf = nullptr;
     BufferCtor(&buf, "assets/BrayantOHallaron.txt");
     HashTableLoadFromFile(ht, buf);
 
-    HashTableMakeDistr(ht);
-    HashTableDump(ht, "meoow");
+    // HashTableDump(ht, "meoow");
 
     BufferDtor(buf);
     HashTableDtor(ht);
 
     return 0;
 }
+

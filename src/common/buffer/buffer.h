@@ -35,10 +35,10 @@ BufferDtor(buffer_t buffer);
 // ================================ ACTIONS ===================================
 
 void 
-SkipAlphaB(buffer_t buffer);
+SkipAlNumB(buffer_t buffer);
 
 void 
-SkipNotAlphaB(buffer_t buffer);
+SkipNotAlNumB(buffer_t buffer);
 
 void 
 SkipNSymbolsB(buffer_t buffer,
