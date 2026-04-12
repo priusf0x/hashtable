@@ -6,6 +6,7 @@ SOURCES= \
 	 hashtable/hashtable_dump.cpp\
 	 hash/hash.cpp\
 	 test.cpp\
+	 hashtable/hashtable_test.cpp
 	
 INCLUDES_DIR = \
 	 list/\

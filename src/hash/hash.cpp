@@ -107,6 +107,8 @@ HashELF(string_s string)
     return hash;
 }
 
+// 8. Hash CRC32
+
 uint32_t 
 HashCRC32(string_s string)
 {
@@ -130,5 +132,7 @@ HashCRC32(string_s string)
 
     return ~crc;
 }
+
+// Просчитанный алгоритм crc32 скопированный с https://web.mit.edu/freebsd/head/sys/libkern/crc32.c
 
 

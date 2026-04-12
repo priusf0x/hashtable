@@ -65,4 +65,17 @@ hashtable_ret_e
 HashTableMakeDistr(hashtable_t ht,
                    const char* output_name);
 
+// =============================== TEST_FUNCTION ==============================
+
+hashtable_ret_e 
+HashTableInitTests(string_s* ht_test,
+                   buffer_t  buf,
+                   size_t    test_amount);
+
+hashtable_ret_e 
+HashTableRunTests(hashtable_t ht,
+                  string_s*   ht_test,
+                  size_t      test_amount);
+
+
 #endif // HASHTABLE_H

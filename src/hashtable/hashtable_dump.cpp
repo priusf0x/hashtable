@@ -52,10 +52,6 @@ HashTableDump(const hashtable_t ht,
 }
 //////////////////////////////////// dot_gen //////////////////////////////////
 
-// static void DrawFilledElement(const list_t list, size_t  index, FILE* dot_file);
-// static void DrawEmptyElement(const list_t list, size_t  index, FILE* dot_file);
-// static void DrawInfoElements(const list_t list, FILE* dot_file);
-
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
 
 static hashtable_ret_e 

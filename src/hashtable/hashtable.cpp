@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "buffer/buffer.h"
 #include "list.h"
@@ -163,12 +164,20 @@ HashTableGetElem(hashtable_t ht,
 
 // ======================== LOAD_TABLE_FROM_FILE ==============================
 
+#ifdef HT_GEN_TEST 
+static const char* EXTRACTED_WORDS = "tests/extracted_words.txt";
+#endif // HT_GEN_TEST
+
 hashtable_ret_e
 HashTableLoadFromFile(hashtable_t ht, 
                       buffer_t    buf)
 {
     assert(ht != nullptr);
     assert(buf != nullptr);
+
+    #ifdef HT_GEN_TEST
+        FILE* test_file = fopen(EXTRACTED_WORDS, "w+");
+    #endif // HT_TEST 
 
     hashtable_ret_e ht_ret = HT_SUCCESS;
     SkipNotAlNumB(buf);
@@ -185,7 +194,15 @@ HashTableLoadFromFile(hashtable_t ht,
         {
             return ht_ret;
         }
+
+        #ifdef HT_GEN_TEST
+            fprintf(test_file, "%.*s\n", (int) word.size, word.string);
+        #endif // HT_TEST 
     }
+
+    #ifdef HT_GEN_TEST
+        fclose(test_file);
+    #endif // HT_TEST 
 
     return HT_SUCCESS;
 }
