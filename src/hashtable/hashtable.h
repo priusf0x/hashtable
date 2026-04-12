@@ -75,7 +75,8 @@ HashTableInitTests(string_s* ht_test,
 hashtable_ret_e 
 HashTableRunTests(hashtable_t ht,
                   string_s*   ht_test,
-                  size_t      test_amount);
+                  size_t      test_amount,
+                  size_t      test_series);
 
 
 #endif // HASHTABLE_H

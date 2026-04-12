@@ -35,22 +35,64 @@ HashTableInitTests(string_s* ht_test,
                                       
 ///////////////////////////////// run_tests ///////////////////////////////////
 
+static hashtable_ret_e 
+WriteJSON(FILE*  output_file,
+          float* data,
+          size_t test_series)
+{
+    assert(output_file != nullptr);
+    assert(data != nullptr);
+
+    const char* json_heading = "{\n\"data\":[";
+    const char* json_EOF = "]}";
+
+    fprintf(file_output, "%s", json_heading);
+    const char* json_heading = "{\n\"data\":[";
+
+
+    return HT_SUCCESS;
+}
+
 hashtable_ret_e 
 HashTableRunTests(hashtable_t ht,
                   string_s*   ht_test,
-                  size_t      test_amount)
+                  size_t      test_amount,
+                  size_t      test_series,
+                  const char* output_name)
 {
     assert(ht != nullptr);
     assert(ht_test != nullptr);
+    assert(output_name != nullptr);
 
-    int sum = 0;
-
-    for (size_t i = 0; i < test_amount; i++)
+    FILE* file_output = fopen(output_name, "w+");
+    if (file_output == nullptr)
     {
-        sum += HashTableGetElem(ht, ht_test[i]);
+        return HT_FILE_OPEN_ERR;
     }
 
-    printf("%d", sum);
+    double* data = (double*) calloc(test_series, sizeof(double));
+
+    if (data == nullptr)
+    {
+        fclose(file_output);
+
+        return HT_BAD_ALLOCATION;
+    }
+
+    while (test_series)
+    {
+        for (size_t i = 0; i < test_amount; i++)
+        {
+            HashTableGetElem(ht, ht_test[i]);
+        }
+    }
+
+    free(data);
+
+    if (fclose(file_output))
+    {
+        return HT_FILE_CLOSE_ERR;
+    }
 
     return HT_SUCCESS;
 }
