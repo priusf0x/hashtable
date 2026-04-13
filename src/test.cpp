@@ -6,8 +6,6 @@
 #include "hash.h"
 #include "buffer.h"
 
-static const size_t TABLE_SIZE = 1499;
-
 int main(void)
 {
 

@@ -22,11 +22,11 @@ static list_return_e NumerizeElements(list_t list, size_t start_index);
 static list_return_e IncreaseCapacity(list_t list);
 
 static list_return_e ListVerify(const list_t list);
-#ifndef NDEBUG
-#define VERIFY_RET(___X) do{list_return_e ___output = ListVerify(___X); if (___output != LIST_RETURN_SUCCESS) { return ___output;}} while(0)
-#else
+// #ifndef NDEBUG
+// #define VERIFY_RET(___X) do{list_return_e ___output = ListVerify(___X); if (___output != LIST_RETURN_SUCCESS) { return ___output;}} while(0)
+// #else
 #define VERIFY_RET(X) (void) 67
-#endif
+// #endif
 
 struct list_element_s
 {
@@ -223,13 +223,13 @@ GetElementValue(const list_t list,
     assert(list != nullptr);
     assert(value != nullptr);
     VERIFY_RET(list);
-
-     if ((element_index > list->elements_capacity)
-        || (list->data[element_index].previous == NO_LINK)
-        || (element_index == 0))
-    {
-        return LIST_RETURN_INCORRECT_VALUE;
-    }
+    //
+    //  if ((element_index > list->elements_capacity)
+    //     || (list->data[element_index].previous == NO_LINK)
+    //     || (element_index == 0))
+    // {
+    //     return LIST_RETURN_INCORRECT_VALUE;
+    // }
 
     *value = list->data[element_index].element;
 
@@ -245,13 +245,13 @@ GetNextElement(const list_t list,
     assert(list);
     VERIFY_RET(list);
 
-    if ((element_index > list->elements_capacity)
-        || (list->data[element_index].previous == NO_LINK))
-        // || (element_index == 0))
-    {
-        return NO_LINK;
-    }
-
+    // if ((element_index > list->elements_capacity)
+    //     || (list->data[element_index].previous == NO_LINK))
+    //     // || (element_index == 0))
+    // {
+    //     return NO_LINK;
+    // }
+    //
     VERIFY_RET(list);
 
     return list->data[element_index].next;
