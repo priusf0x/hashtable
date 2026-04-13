@@ -155,6 +155,7 @@ HashTableGetElem(hashtable_t ht,
 
 // ======================== LOAD_TABLE_FROM_FILE ==============================
 
+#define HT_GEN_TEST
 #ifdef HT_GEN_TEST 
 static const char* EXTRACTED_WORDS = "tests/extracted_words.txt";
 #endif // HT_GEN_TEST
@@ -181,14 +182,16 @@ HashTableLoadFromFile(hashtable_t ht,
         SkipNotAlNumB(buf);
 
         string_s word = {buf->buffer + word_pos, word_size};
+        #ifdef HT_GEN_TEST
+        if (HashTableGetElem(ht, word))
+        {
+            fprintf(test_file, "%.*s\n", (int) word.size, word.string);
+        }
+        #endif // HT_TEST 
         if ((ht_ret = HashTableAddElem(ht, word)))
         {
             return ht_ret;
         }
-
-        #ifdef HT_GEN_TEST
-            fprintf(test_file, "%.*s\n", (int) word.size, word.string);
-        #endif // HT_TEST 
     }
 
     #ifdef HT_GEN_TEST
