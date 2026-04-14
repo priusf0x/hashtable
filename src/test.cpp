@@ -6,8 +6,6 @@
 #include "hash.h"
 #include "buffer.h"
 
-static const size_t TABLE_SIZE = 1499;
-
 int main(void)
 {
 
@@ -17,7 +15,6 @@ int main(void)
     buffer_t src_buf = nullptr;
     BufferCtor(&src_buf, "assets/BrayantOHallaron.txt");
     HashTableLoadFromFile(ht, src_buf);
-
     buffer_t test_buf = nullptr;
     const size_t test_amount = 1'000'000;
     string_s* tests = (string_s*) calloc(test_amount, sizeof(string_s));

@@ -29,6 +29,8 @@ enum hashtable_ret_e
     HT_BUFFER_ERR
 };
 
+static const size_t TABLE_SIZE = 1499;
+
 // ================================= CTOR/DTOR ================================
 
 hashtable_ret_e

@@ -1,10 +1,12 @@
 #include "hashtable.h"
 
 #include <assert.h>
+#include <crc32intrin.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#include <nmmintrin.h>
 
 #include "buffer/buffer.h"
 #include "list.h"
@@ -38,7 +40,9 @@ HashTableCtor(hashtable_t* h_tab,
     }                                    
 
     list_return_e list_ctor_output = LIST_RETURN_SUCCESS;
-    if ((list_ctor_output = InitList(&(*h_tab)->data, h_size * 3)))
+
+    const size_t load_factor = 10;
+    if ((list_ctor_output = InitList(&(*h_tab)->data, h_size * load_factor)))
     {
         free((*h_tab)->buckets);
         free(*h_tab);
@@ -67,14 +71,29 @@ HashTableDtor(hashtable_t h_tab)
                                                                        
 // ============================= HASHTABLE_FUNCTION ===========================
 
+///////////////////////////////// inlining_hash ///////////////////////////////
+
+///////////////////////// intrinsic_hash_implementation ///////////////////////
+
+static inline uint32_t
+HashIntrinsicsV1(string_s elem)
+{
+    while (elem.size > 0)
+    {
+        _mm_crc32_u8(, unsigned char D)
+        elem.size--;
+    }
+}
+
 static inline size_t 
 GetIndex(hashtable_t ht, 
          string_s    elem)
 {
     assert(ht != nullptr);
 
-    return ht->hash_func(elem) % ht->tab_size;
+    return HashCRC32Intrinsics(elem) % TABLE_SIZE;
 }
+// for optimization hash function was inlined
 
 hashtable_ret_e 
 HashTableAddElem(hashtable_t ht,
