@@ -25,7 +25,7 @@ SOURCES := $(addprefix $(SOURCE_DIR)/, $(SOURCES))
 TARGET = hashtable.out
 
 # c++/c compiler options
-CC = gcc
+CC = clang
 CXXFLAGS =  -D NDEBUG -std=c++17 -O3
 # CXXFLAGS += -Wall -gddb3 -Wextra -Weffc++ -Waggressive-loop-optimizations\
 		 -Wc++14-compat -Wmissing-declarations -Wcast-align -Wcast-qual -Wchar-subscripts\

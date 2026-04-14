@@ -167,6 +167,25 @@ GetIndex(hashtable_t ht,
 }
 // for optimization hash function was inlined
 
+////////////////////////////// inlining_list_functions ////////////////////////
+
+static inline void 
+InlinedGetString(const list_t list,
+                 size_t       element_index,
+                 data_type*   value)
+{
+    *value = list->data[element_index].element;
+}
+
+static inline ssize_t
+InlinedGetNextElement(const list_t list,
+                      size_t       element_index)
+{
+
+    return list->data[element_index].next;
+}
+
+
 hashtable_ret_e 
 HashTableAddElem(hashtable_t ht,
                  string_s    elem)
@@ -191,8 +210,8 @@ HashTableAddElem(hashtable_t ht,
         do
         {
             list_index = next_index;
-            next_index = (size_t) GetNextElement(list, list_index);
-            GetElementValue(list, list_index, &cmp_string);
+            next_index = (size_t) InlinedGetNextElement(list, list_index);
+            InlinedGetString(list, list_index, &cmp_string);
             if ((cmp_string.size == elem.size) && 
                 !strncmp(cmp_string.string, elem.string, elem.size))
             {
@@ -231,8 +250,8 @@ HashTableGetElem(hashtable_t ht,
         do
         {
             list_index = next_index;
-            next_index = (size_t) GetNextElement(list, list_index);
-            GetElementValue(list, list_index, &cmp_string);
+            next_index = (size_t) InlinedGetNextElement(list, list_index);
+            InlinedGetString(list, list_index, &cmp_string);
             if ((cmp_string.size == elem.size) && 
                 !strncmp(cmp_string.string, elem.string, elem.size))
             {

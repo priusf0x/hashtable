@@ -23,7 +23,25 @@ enum list_return_e
 
 // ======================== LIST ===========================
 
-typedef string_s data_type;  
+typedef string_s data_type;
+
+struct list_element_s
+{
+    data_type element;
+    ssize_t next;
+    ssize_t previous;
+};
+
+struct list_s
+{
+    uint64_t* canary_start;
+    list_element_s* data;
+    uint64_t* canary_end;
+    ssize_t free;
+    size_t elements_count;
+    size_t elements_capacity;
+    size_t real_size_in_bytes;
+};
 
 typedef list_s* list_t;
 
