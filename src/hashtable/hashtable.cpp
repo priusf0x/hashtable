@@ -90,7 +90,7 @@ HashIntrinsicsV1(string_s elem)
     return hash;
 }
 
-static inline uint32_t
+static uint32_t
 HashIntrinsicsV2(string_s elem)
 {
     uint32_t hash = ~0u;
@@ -124,7 +124,7 @@ HashIntrinsicsV2(string_s elem)
     return hash;
 }
 
-static inline size_t 
+static  __attribute__((noinline)) size_t 
 GetIndex(hashtable_t ht, 
          string_s    elem)
 {
