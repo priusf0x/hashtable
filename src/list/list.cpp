@@ -224,12 +224,12 @@ GetElementValue(const list_t list,
     assert(value != nullptr);
     VERIFY_RET(list);
 
-     if ((element_index > list->elements_capacity)
-        || (list->data[element_index].previous == NO_LINK)
-        || (element_index == 0))
-    {
-        return LIST_RETURN_INCORRECT_VALUE;
-    }
+    //  if ((element_index > list->elements_capacity)
+    //     || (list->data[element_index].previous == NO_LINK)
+    //     || (element_index == 0))
+    // {
+    //     return LIST_RETURN_INCORRECT_VALUE;
+    // }
 
     *value = list->data[element_index].element;
 
@@ -245,12 +245,12 @@ GetNextElement(const list_t list,
     assert(list);
     VERIFY_RET(list);
 
-    if ((element_index > list->elements_capacity)
-        || (list->data[element_index].previous == NO_LINK))
+    // if ((element_index > list->elements_capacity)
+    //     || (list->data[element_index].previous == NO_LINK))
         // || (element_index == 0))
-    {
-        return NO_LINK;
-    }
+    // {
+    //     return NO_LINK;
+    // }
 
     VERIFY_RET(list);
 

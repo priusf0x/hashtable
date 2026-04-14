@@ -1,7 +1,6 @@
 #include "hashtable.h"
 
 #include <assert.h>
-#include <crc32intrin.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
@@ -9,6 +8,7 @@
 #include <nmmintrin.h>
 
 #include "buffer/buffer.h"
+#include "hash.h"
 #include "list.h"
 #include "buffer.h"
 #include "string.h"
@@ -78,11 +78,50 @@ HashTableDtor(hashtable_t h_tab)
 static inline uint32_t
 HashIntrinsicsV1(string_s elem)
 {
-    while (elem.size > 0)
+    uint32_t hash = ~0u;
+    unsigned char character = 0;
+
+    for (size_t i = 0; i < elem.size; i++)
     {
-        _mm_crc32_u8(, unsigned char D)
-        elem.size--;
+        character = (unsigned char) elem.string[i];
+        hash = _mm_crc32_u8(hash, character);
     }
+
+    return hash;
+}
+
+static inline uint32_t
+HashIntrinsicsV2(string_s elem)
+{
+    uint32_t hash = ~0u;
+    
+    for (; elem.size > 7;) 
+    {
+        hash = _mm_crc32_u64(hash, *((uint64_t*) elem.string));
+        elem.string += 8;
+        elem.size -= 8;
+    }
+
+    if (elem.size & 0b100)
+    {
+        hash = _mm_crc32_u32(hash, *((uint32_t*) elem.string));
+        elem.string += 4;
+        elem.size -= 4;
+    }
+
+    if (elem.size & 0b10)
+    {
+        hash = _mm_crc32_u16(hash, *((uint16_t*) elem.string));
+        elem.string += 2;
+        elem.size -= 2;
+    }
+
+    if (elem.size & 0b1)
+    {
+        hash = _mm_crc32_u8(hash, *((uint8_t*) elem.string));
+    }
+
+    return hash;
 }
 
 static inline size_t 
@@ -91,7 +130,7 @@ GetIndex(hashtable_t ht,
 {
     assert(ht != nullptr);
 
-    return HashCRC32Intrinsics(elem) % TABLE_SIZE;
+    return HashIntrinsicsV2(elem) % TABLE_SIZE;
 }
 // for optimization hash function was inlined
 
