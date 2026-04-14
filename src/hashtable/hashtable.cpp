@@ -76,62 +76,45 @@ HashTableDtor(hashtable_t h_tab)
 ///////////////////////// intrinsic_hash_implementation ///////////////////////
 
 static inline uint32_t
-HashIntrinsicsV1(string_s elem)
+HashCRCIntrinsics(string_s elem)
 {
     uint32_t hash = ~0u;
-    unsigned char character = 0;
 
     for (size_t i = 0; i < elem.size; i++)
     {
-        character = (unsigned char) elem.string[i];
-        hash = _mm_crc32_u8(hash, character);
+        hash = _mm_crc32_u8(hash, (unsigned char) elem.string[i]);
     }
 
     return hash;
 }
 
-static uint32_t
-HashIntrinsicsV2(string_s elem)
-{
-    uint32_t hash = ~0u;
-    
-    for (; elem.size > 7;) 
-    {
-        hash = _mm_crc32_u64(hash, *((uint64_t*) elem.string));
-        elem.string += 8;
-        elem.size -= 8;
-    }
-
-    if (elem.size & 0b100)
-    {
-        hash = _mm_crc32_u32(hash, *((uint32_t*) elem.string));
-        elem.string += 4;
-        elem.size -= 4;
-    }
-
-    if (elem.size & 0b10)
-    {
-        hash = _mm_crc32_u16(hash, *((uint16_t*) elem.string));
-        elem.string += 2;
-        elem.size -= 2;
-    }
-
-    if (elem.size & 0b1)
-    {
-        hash = _mm_crc32_u8(hash, *((uint8_t*) elem.string));
-    }
-
-    return hash;
-}
-
-static  __attribute__((noinline)) size_t 
+inline static size_t 
 GetIndex(hashtable_t ht, 
          string_s    elem)
 {
     assert(ht != nullptr);
 
-    return HashIntrinsicsV2(elem) % TABLE_SIZE;
+    return HashCRCIntrinsics(elem) % TABLE_SIZE;
 }
+
+////////////////////////////// inlining_list_functions ////////////////////////
+
+static inline void 
+InlinedGetValue(const list_t list,
+                  size_t       element_index,
+                  data_type*   value)
+{
+    *value = list->data[element_index].element;
+}
+
+static inline ssize_t
+InlinedGetNextElement(const list_t list,
+                      size_t       element_index)
+{
+
+    return list->data[element_index].next;
+}
+
 // for optimization hash function was inlined
 
 hashtable_ret_e 
@@ -158,8 +141,8 @@ HashTableAddElem(hashtable_t ht,
         do
         {
             list_index = next_index;
-            next_index = (size_t) GetNextElement(list, list_index);
-            GetElementValue(list, list_index, &cmp_string);
+            next_index = (size_t) InlinedGetNextElement(list, list_index);
+            InlinedGetValue(list, list_index, &cmp_string);
             if ((cmp_string.size == elem.size) && 
                 !strncmp(cmp_string.string, elem.string, elem.size))
             {
@@ -198,8 +181,8 @@ HashTableGetElem(hashtable_t ht,
         do
         {
             list_index = next_index;
-            next_index = (size_t) GetNextElement(list, list_index);
-            GetElementValue(list, list_index, &cmp_string);
+            next_index = (size_t) InlinedGetNextElement(list, list_index);
+            InlinedGetValue(list, list_index, &cmp_string);
             if ((cmp_string.size == elem.size) && 
                 !strncmp(cmp_string.string, elem.string, elem.size))
             {

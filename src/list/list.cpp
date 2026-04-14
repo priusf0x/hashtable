@@ -28,26 +28,6 @@ static list_return_e ListVerify(const list_t list);
 #define VERIFY_RET(X) (void) 67
 #endif
 
-struct list_element_s
-{
-    data_type element;
-    ssize_t next;
-    ssize_t previous;
-};
-
-struct list_s
-{
-    uint64_t* canary_start;
-    list_element_s* data;
-    uint64_t* canary_end;
-    ssize_t free;
-    size_t elements_count;
-    size_t elements_capacity;
-    size_t real_size_in_bytes;
-};
-
-
-
 //====================== ACTS_WITH_LIST ===========================
 
 list_return_e
