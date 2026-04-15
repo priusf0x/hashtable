@@ -186,11 +186,11 @@ HashTableGetElem(hashtable_t ht,
             list_index = next_index;
             next_index = (size_t) InlinedGetNextElement(data, list_index);
             InlinedGetValue(data, list_index, &cmp_string);
-            if ((cmp_string.size == elem_size) && 
-                !ssestrncmp(cmp_string.string, elem_ptr, elem_size))
-            {
-                return HT_SUCCESS;
-            }   
+            if (cmp_string.size == elem_size)
+                if (!ssestrncmp(cmp_string.string, elem_ptr, elem_size))
+                    {
+                        return HT_SUCCESS;
+                    }   
         } while (next_index != 0);
     }
 
