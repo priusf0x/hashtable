@@ -11,7 +11,7 @@
 
 #define NDEBUG 
 
-const ssize_t CANARY_SIZE = 4;
+const ssize_t CANARY_SIZE = 0;
 static const uint64_t CANARY_FILL = 0xBAB1BAB0BAB1BAB0;
 
 static const int NO_LINK = -1;
@@ -46,7 +46,7 @@ InitList(list_t*  list,
     (*list)->real_size_in_bytes = 2 * sizeof(uint64_t) * CANARY_SIZE
                                + start_list_size * sizeof(list_element_s);
 
-    (*list)->canary_start = (uint64_t*) calloc((*list)->real_size_in_bytes, sizeof(uint8_t));
+    (*list)->canary_start = (uint64_t*) aligned_alloc(32, (*list)->real_size_in_bytes);
 
     if ((*list)->canary_start == NULL)
     {

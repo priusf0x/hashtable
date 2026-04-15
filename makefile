@@ -6,7 +6,7 @@ SOURCES= \
 	 hashtable/hashtable_dump.cpp\
 	 hash/hash.cpp\
 	 test.cpp\
-	 hashtable/hashtable_test.cpp
+	 hashtable/hashtable_test.cpp\
 	
 INCLUDES_DIR = \
 	 list/\
@@ -26,7 +26,7 @@ TARGET = hashtable.out
 
 # c++/c compiler options
 CC = clang
-CXXFLAGS =  -D NDEBUG -ggdb3 -std=c++17 -O3 -mavx2 
+CXXFLAGS =  -g -D NDEBUG -ggdb3 -std=c++17 -O3 -mavx2 
 # CXXFLAGS += -Wall -Wextra -Weffc++ -Waggressive-loop-optimizations\
 		 -Wc++14-compat -Wmissing-declarations -Wcast-align -Wcast-qual -Wchar-subscripts\
 		 -Wconditionally-supported -Wconversion -Wctor-dtor-privacy -Wempty-body -Wfloat-equal\
@@ -48,6 +48,7 @@ LDFLAGS := $(CXXFLAGS)
 LDFLAGS += -lstdc++
 
 logfolder = logs
+ssestcmp = src/common/strnlen.s
 
 $(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 	@mkdir -p $(dir $@)
@@ -57,8 +58,9 @@ $(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 	@echo "Compiled Successfully" $<
 
 $(TARGET): $(OBJECTS)
+	@nasm -f elf64 $(ssestcmp) -o $(OBJ_DIR)/strnlen.o
 	@echo "Linking..."
-	@$(CC) $(LDFLAGS) $^ -o $@
+	@$(CC) $(LDFLAGS) $^ -o $@  $(OBJ_DIR)/strnlen.o
 	@echo "Linked Successfully"
 
 all: $(TARGET)

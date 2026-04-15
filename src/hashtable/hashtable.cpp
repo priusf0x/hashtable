@@ -5,13 +5,14 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
-#include <nmmintrin.h>
+#include <immintrin.h>
 
 #include "buffer/buffer.h"
 #include "hash.h"
 #include "list.h"
 #include "buffer.h"
 #include "string.h"
+#include "tools.h"
 
 // ================================= CTOR/DTOR ================================
 
@@ -100,19 +101,19 @@ GetIndex(hashtable_t ht,
 ////////////////////////////// inlining_list_functions ////////////////////////
 
 static inline void 
-InlinedGetValue(const list_t list,
-                  size_t       element_index,
-                  data_type*   value)
+InlinedGetValue(list_element_s* data,
+                size_t       element_index,
+                data_type*   value)
 {
-    *value = list->data[element_index].element;
+    *value = data[element_index].element;
 }
 
 static inline ssize_t
-InlinedGetNextElement(const list_t list,
-                      size_t       element_index)
+InlinedGetNextElement(list_element_s* data,
+                      size_t element_index)
 {
 
-    return list->data[element_index].next;
+    return data[element_index].next;
 }
 
 // for optimization hash function was inlined
@@ -141,10 +142,10 @@ HashTableAddElem(hashtable_t ht,
         do
         {
             list_index = next_index;
-            next_index = (size_t) InlinedGetNextElement(list, list_index);
-            InlinedGetValue(list, list_index, &cmp_string);
+            next_index = (size_t) GetNextElement(list, list_index);
+            GetElementValue(list, list_index, &cmp_string);
             if ((cmp_string.size == elem.size) && 
-                !strncmp(cmp_string.string, elem.string, elem.size))
+                !ssestrncmp(cmp_string.string, elem.string, elem.size))
             {
                 is_in_table = true;
                 break;
@@ -168,23 +169,25 @@ HashTableGetElem(hashtable_t ht,
 
     size_t table_index = GetIndex(ht, elem);
     size_t list_index = ht->buckets[table_index];
-    list_t list = ht->data;
+    list_element_s* data = ht->data->data;
     string_s cmp_string = {};
-    
-    if (list_index == 0)
+                 
+    if (list_index == 0) [[unlikely]]
     {
         return HT_NO_SUCH_ELEM; 
     }
     else 
     {
         size_t next_index = list_index;
+        size_t elem_size = elem.size;
+        const char* elem_ptr = elem.string;
         do
         {
             list_index = next_index;
-            next_index = (size_t) InlinedGetNextElement(list, list_index);
-            InlinedGetValue(list, list_index, &cmp_string);
-            if ((cmp_string.size == elem.size) && 
-                !strncmp(cmp_string.string, elem.string, elem.size))
+            next_index = (size_t) InlinedGetNextElement(data, list_index);
+            InlinedGetValue(data, list_index, &cmp_string);
+            if ((cmp_string.size == elem_size) && 
+                !ssestrncmp(cmp_string.string, elem_ptr, elem_size))
             {
                 return HT_SUCCESS;
             }   

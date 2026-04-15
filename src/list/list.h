@@ -28,7 +28,7 @@ typedef string_s data_type;
 
 struct list_element_s
 {
-    data_type element;
+    string_s element;
     ssize_t next;
     ssize_t previous;
 };

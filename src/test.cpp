@@ -6,9 +6,10 @@
 #include "hash.h"
 #include "buffer.h"
 
+#include "list.h"
+#include "tools.h"
 int main(void)
 {
-
     hashtable_t ht = nullptr;
     HashTableCtor(&ht, TABLE_SIZE, HashCRC32);
 

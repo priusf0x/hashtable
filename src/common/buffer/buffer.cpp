@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <cctype>
 #include <cstddef>
+#include <cstdlib>
 #include <string.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -45,7 +46,9 @@ BufferCtor(buffer_t*    buffer,
         return BUFFER_RETUNR_FILE_OPEN_ERROR;
     }
 
-    (*buffer)->buffer = (char*) calloc((size_t) char_number + 1, sizeof(char));
+    const size_t extra_space_for_sse = 16; // нужно чтобы занитайзер не ругался чуть что 
+    (*buffer)->buffer = (char*) calloc((size_t) char_number + 1 + extra_space_for_sse, 
+                                        sizeof(char)); // для оптимизации aligned_alloc
     if ((*buffer)->buffer == NULL)
     {
         free(*buffer);
