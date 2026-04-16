@@ -1,6 +1,7 @@
 #include "hashtable.h"
 
 #include <assert.h>
+#include <scoped_allocator>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
@@ -186,15 +187,82 @@ HashTableGetElem(hashtable_t ht,
             list_index = next_index;
             next_index = (size_t) InlinedGetNextElement(data, list_index);
             InlinedGetValue(data, list_index, &cmp_string);
-            if (cmp_string.size == elem_size)
-                if (!ssestrncmp(cmp_string.string, elem_ptr, elem_size))
-                    {
-                        return HT_SUCCESS;
-                    }   
+            if ((cmp_string.size == elem_size)
+                    && !ssestrncmp(cmp_string.string, elem_ptr, elem_size))
+            {
+                return HT_SUCCESS;
+            }   
         } while (next_index != 0);
     }
 
     return HT_NO_SUCH_ELEM;
+}
+
+// ========================= LINEARIZE_HASHTABLE ============================
+
+static list_return_e
+LinearizeList(list_t  old_list,
+              list_t  new_list,
+              size_t* first_ind)
+{
+    assert(old_list != nullptr);
+    assert(new_list != nullptr);
+    assert(first_ind != nullptr);
+
+    if (*first_ind == 0)
+    {
+        return LIST_RETURN_SUCCESS;
+    }
+
+    size_t old_index = *first_ind;
+    size_t new_index = 0;
+    string_s value = {};
+    list_return_e output = LIST_RETURN_SUCCESS;
+
+    GetElementValue(old_list, old_index, &value);
+    if ((output = ListInitNewElem(new_list, value, &new_index)))
+    {
+        return output;
+    }
+    *first_ind = new_index;
+    old_index = (size_t) GetNextElement(old_list, old_index);
+
+    while (old_index)
+    {
+        GetElementValue(old_list, old_index, &value);
+        if ((output = ListAddAfterElement(new_list, value, new_index)))
+        {
+            return output;
+        }
+        old_index = (size_t) GetNextElement(old_list, old_index);
+        new_index = (size_t) GetNextElement(new_list, new_index);
+    }
+
+    return LIST_RETURN_SUCCESS;
+}
+
+hashtable_ret_e 
+HashTableLinearize(hashtable_t ht)
+{
+    assert(ht != nullptr);
+
+    list_t lin_data = nullptr;
+    list_t old_list = ht->data;
+    InitList(&lin_data, old_list->elements_capacity);
+
+    size_t buck_amount = ht->tab_size;
+    for (size_t buck = 0; buck < buck_amount; buck++)
+    {
+        if (LinearizeList(old_list, lin_data, &ht->buckets[buck]))
+        {
+            return HT_LIST_ERR;
+        }
+    }
+
+    DestroyList(old_list);
+    ht->data = lin_data;
+
+    return HT_SUCCESS;
 }
 
 // ======================== LOAD_TABLE_FROM_FILE ==============================

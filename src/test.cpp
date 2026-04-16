@@ -18,6 +18,7 @@ int main(void)
     HashTableLoadFromFile(ht, src_buf);
     buffer_t test_buf = nullptr;
     const size_t test_amount = 1'000'000;
+    HashTableLinearize(ht);
     string_s* tests = (string_s*) calloc(test_amount, sizeof(string_s));
     BufferCtor(&test_buf, "tests/test.txt");
     const size_t test_series = 100;

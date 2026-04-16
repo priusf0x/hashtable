@@ -80,6 +80,9 @@ HashTableRunTests(hashtable_t ht,
                   size_t      test_amount,
                   size_t      test_series,
                   const char* output_name);
+// ================================ OPTIMIZE ==================================
 
+hashtable_ret_e 
+HashTableLinearize(hashtable_t ht);
 
 #endif // HASHTABLE_H
