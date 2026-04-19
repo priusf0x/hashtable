@@ -6,13 +6,13 @@
 #include "hash.h"
 #include "buffer.h"
 
-static const size_t TABLE_SIZE = 1499;
+static const size_t TABLE_SIZE = 499;
 
 int main(void)
 {
 
     hashtable_t ht = nullptr;
-    HashTableCtor(&ht, TABLE_SIZE, HashCRC32);
+    HashTableCtor(&ht, TABLE_SIZE, HashElemSum);
 
     buffer_t src_buf = nullptr;
     BufferCtor(&src_buf, "assets/BrayantOHallaron.txt");
@@ -21,8 +21,11 @@ int main(void)
     buffer_t test_buf = nullptr;
     const size_t test_amount = 1'000'000;
     string_s* tests = (string_s*) calloc(test_amount, sizeof(string_s));
-    BufferCtor(&test_buf, "tests/test.txt");
-    const size_t test_series = 100;
+    BufferCtor(&test_buf, "tests/test1.txt");
+
+    // HashTableMakeDistr(ht, "plots/ElemSum500.json");
+
+    const size_t test_series = 10;
     HashTableInitTests(tests , test_buf, test_amount);
     HashTableRunTests(ht, tests, test_amount, test_series, "data.json");
 

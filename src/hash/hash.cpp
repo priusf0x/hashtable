@@ -90,18 +90,13 @@ HashRor(string_s string)
 // 7. Hash ELF
 
 uint32_t 
-HashELF(string_s string)
+HashGNU(string_s string)
 {
     uint32_t hash = 0;
-    uint32_t x = 0;
 
     for (size_t i = 0; i < string.size; i++)
     {
-        hash = (hash << 4) + (uint32_t) string.string[i];
-        if ((x = hash & 0xF0000000L) != 0) {
-            hash ^= (x >> 24); 
-            hash &= ~x;        
-        }
+        hash = ((hash << 5) + hash) + (uint32_t) string.string[i];
     }
 
     return hash;

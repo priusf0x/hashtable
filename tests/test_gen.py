@@ -10,7 +10,7 @@ with open('tests/extracted_words.txt', 'r') as file:
 
 words = words_dict + words_extracted 
 
-test_number = 10000000
+test_number = 1000000
 with open('tests/test.txt', 'w+') as file: 
     for i in range(test_number):
         file.write(rd.choice(words) + "\n") 

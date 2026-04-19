@@ -11,7 +11,7 @@
 /*4*/ uint32_t HashElemSum(string_s string);
 /*5*/ uint32_t HashRol(string_s string);
 /*6*/ uint32_t HashRor(string_s string);
-/*7*/ uint32_t HashELF(string_s string);
+/*7*/ uint32_t HashGNU(string_s string);
 /*8*/ uint32_t HashCRC32(string_s string);
 
 #endif // HASH_H

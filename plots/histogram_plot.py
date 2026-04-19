@@ -3,17 +3,17 @@ import statistics
 import matplotlib.pyplot as plt
 from math import sqrt
 
-df = pd.read_json('HashRor.json')
+df = pd.read_json('plots/HashRol.json')
 data = df['data']
 
-index = [i for i in range(len(data))]
-plt.bar(index,data)
-plt.title("Bar for HASHROL hash function")
-plt.xlabel("Buckets")
-plt.ylabel("Words")
-plt.savefig("meow.png")
+# index = [i for i in range(len(data))]
+# plt.bar(index,data)
+# plt.title("Bar for ELEMSUM hash function")
+# plt.xlabel("Buckets")
+# plt.ylabel("Words")
+# plt.savefig("plots/ElemSum500.png")
 
 mean = statistics.mean(data)
 variance = statistics.variance(data)
 
-# print(f"({round(float(mean)/10**6, 2)} ± {round((sqrt(variance)/mean * 100), 2)}%) * 10^6 \n")
+print(f"varianve={variance}\n")

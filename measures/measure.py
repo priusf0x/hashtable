@@ -3,7 +3,7 @@ import statistics
 from math import sqrt
 
 df = pd.read_json('data.json')
-data = df['data']
+data = df['data'][5::]
 
 mean = statistics.mean(data)
 variance = statistics.variance(data)
