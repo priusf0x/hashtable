@@ -26,7 +26,7 @@ TARGET = hashtable.out
 
 # c++/c compiler options
 CC = clang
-CXXFLAGS =  -D NDEBUG -ggdb3 -std=c++17 -O3 -mavx2 
+CXXFLAGS =  -D NDEBUG -std=c++17 -O3 -mavx2 
 # CXXFLAGS += -Wall -Wextra -Weffc++ -Waggressive-loop-optimizations\
 		 -Wc++14-compat -Wmissing-declarations -Wcast-align -Wcast-qual -Wchar-subscripts\
 		 -Wconditionally-supported -Wconversion -Wctor-dtor-privacy -Wempty-body -Wfloat-equal\
