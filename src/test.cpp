@@ -6,13 +6,13 @@
 #include "hash.h"
 #include "buffer.h"
 
-static const size_t TABLE_SIZE = 499;
+static const size_t TABLE_SIZE = 1499;
 
 int main(void)
 {
 
     hashtable_t ht = nullptr;
-    HashTableCtor(&ht, TABLE_SIZE, HashElemSum);
+    HashTableCtor(&ht, TABLE_SIZE, HashCRC32);
 
     buffer_t src_buf = nullptr;
     BufferCtor(&src_buf, "assets/BrayantOHallaron.txt");
@@ -25,7 +25,7 @@ int main(void)
 
     // HashTableMakeDistr(ht, "plots/ElemSum500.json");
 
-    const size_t test_series = 10;
+    const size_t test_series = 100 ;
     HashTableInitTests(tests , test_buf, test_amount);
     HashTableRunTests(ht, tests, test_amount, test_series, "data.json");
 
