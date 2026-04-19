@@ -77,13 +77,17 @@ HashTableDtor(hashtable_t h_tab)
 ///////////////////////// intrinsic_hash_implementation ///////////////////////
 
 static inline uint32_t
-HashCRCIntrinsics(string_s elem)
+HashCRCASM(string_s elem)
 {
     uint32_t hash = ~0u;
 
     for (size_t i = 0; i < elem.size; i++)
     {
-        hash = _mm_crc32_u8(hash, (unsigned char) elem.string[i]);
+        __asm__ volatile(
+            "crc32 %[input], %[output]"
+            : [output] "+r" (hash)   
+            : [input] "r" (elem.string[i])   
+            );
     }
 
     return hash;
@@ -95,7 +99,7 @@ GetIndex(hashtable_t ht,
 {
     assert(ht != nullptr);
 
-    return HashCRCIntrinsics(elem) % TABLE_SIZE;
+    return HashCRCASM(elem) % TABLE_SIZE;
 }
 
 ////////////////////////////// inlining_list_functions ////////////////////////
