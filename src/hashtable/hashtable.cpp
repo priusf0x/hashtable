@@ -77,6 +77,31 @@ HashTableDtor(hashtable_t h_tab)
 
 ///////////////////////// intrinsic_hash_implementation ///////////////////////
 
+inline uint32_t  
+HashCRC32(string_s string)
+{
+    uint32_t crc = ~0u;
+    const uint32_t filter = 0xEDB88320;
+
+    for (size_t i = 0; i < string.size ; i++) 
+    {
+        crc ^= (uint32_t) string.string[i];
+        for (int j = 0; j < 8; j++) {
+            if (crc & 1) 
+            {
+                crc = (crc >> 1) ^ filter;
+            }
+            else 
+            {
+                crc >>= 1;
+            }
+        }
+    }
+
+    return ~crc;
+}
+
+
 static inline uint32_t
 HashCRCIntrinsics(string_s elem)
 {
@@ -85,18 +110,18 @@ HashCRCIntrinsics(string_s elem)
     for (size_t i = 0; i < elem.size; i++)
     {
         hash = _mm_crc32_u8(hash, (unsigned char) elem.string[i]);
-    }
+    }          
 
     return hash;
 }
 
-inline static size_t 
+size_t 
 GetIndex(hashtable_t ht, 
          string_s    elem)
 {
     assert(ht != nullptr);
 
-    return HashCRCIntrinsics(elem) % TABLE_SIZE;
+    return HashCRC32(elem) % TABLE_SIZE;
 }
 
 ////////////////////////////// inlining_list_functions ////////////////////////
@@ -188,7 +213,7 @@ HashTableGetElem(hashtable_t ht,
             next_index = (size_t) InlinedGetNextElement(data, list_index);
             InlinedGetValue(data, list_index, &cmp_string);
             if ((cmp_string.size == elem_size)
-                    && !ssestrncmp(cmp_string.string, elem_ptr, elem_size))
+                    && !strncmp(cmp_string.string, elem_ptr, elem_size))
             {
                 return HT_SUCCESS;
             }   

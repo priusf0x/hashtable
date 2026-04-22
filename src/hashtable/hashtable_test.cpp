@@ -184,8 +184,6 @@ HashTableMakeDistr(hashtable_t ht,
     {
         return HT_BAD_ALLOCATION;    
     }
-// Коля, если ты это читаешь прости меня, пожалуйста, мне очень стыдно
-// здесь использовать каллок, но я не хотел делать VLA или массивы  константной длины
 
     for (size_t buc_num = 0; buc_num < tab_size; buc_num++)
     {
