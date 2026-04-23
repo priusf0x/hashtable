@@ -58,7 +58,7 @@ HashRol(string_s string)
 
     for (size_t i = 0; i < string.size; i++)
     {
-        rolled_bit = hash << (sizeof(uint32_t) - 1);
+        rolled_bit = hash << (sizeof(uint32_t) * 8 - 1);
         hash >>= 1;
         hash |= rolled_bit;
         hash ^= (uint32_t) string.string[i];
@@ -78,7 +78,7 @@ HashRor(string_s string)
 
     for (size_t i = 0; i < string.size; i++)
     {
-        rolled_bit = hash >> (sizeof(uint32_t) - 1);
+        rolled_bit = hash >> (sizeof(uint32_t) * 8 - 1);
         hash <<= 1;
         hash |= rolled_bit;
         hash ^= (uint32_t) string.string[i];
